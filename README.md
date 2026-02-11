@@ -4,9 +4,6 @@
 
 ## AIM:
  
-
- 
-
 To write a C program to implement the Playfair Substitution technique.
 
 ## DESCRIPTION:
@@ -36,8 +33,111 @@ STEP-5: Display the obtained cipher text.
 
 Program:
 
+```
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
 
+char matrix[5][5];
+void createMatrix(char key[]) {
+int used[26] = {0};
+int i, j, k = 0;
+
+ for (i = 0; key[i] != '\0'; i++) {
+if (key[i] == 'J') key[i] ='I';
+if (!used[key[i] - 'A']) {
+matrix[k / 5][k % 5] = key[i];
+used[key[i] - 'A'] = 1; 
+k++;
+ }
+ }
+
+ for (i = 0; i < 26; i++)
+{
+if (i + 'A' == 'J') 
+continue;
+if (!used[i])
+{
+ matrix[k / 5][k % 5] = i + 'A'; 
+ k++;
+}
+}
+}
+
+void findPosition(char ch, int *row, int *col) {
+ int i, j;
+if (ch == 'J') ch = 'I';
+
+ for (i = 0; i < 5; i++)
+for (j = 0; j < 5; j++) if
+(matrix[i][j] == ch)
+{
+ *row = i;
+ *col = j;
+ }
+}
+
+int main()
+{ char text[100],
+key[100];
+int i, r1, c1, r2, c2;
+printf("Enter key: ");
+fgets(key, sizeof(key), stdin); 
+printf("Enter plaintext: ");
+fgets(text, sizeof(text), stdin);
+key[strcspn(key, "\n")] = '\0';
+text[strcspn(text, "\n")] = '\0';
+for (i = 0; key[i]; i++) key[i] = toupper(key[i]);
+for (i = 0; text[i]; i++) text[i] = toupper(text[i]);
+ createMatrix(key);
+ printf("\nPlayfairMatrix:\n");
+for (i = 0; i < 5; i++) { for (int
+j = 0; j < 5; j++)
+printf("%c ", matrix[i][j]);
+printf("\n");
+ }
+ printf("\nEncrypted text: ");
+
+ for (i = 0; text[i] != '\0'; i += 2) {
+ char a = text[i];
+char b = text[i + 1];
+ if (b == '\0') b = 'X';
+if (a == b) b = 'X';
+ findPosition(a, &r1, &c1); 
+findPosition(b, &r2, &c2); 
+if (r1 == r2)
+{ 
+printf("%c%c",
+matrix[r1][(c1 + 1) % 5],
+matrix[r2][(c2 + 1) % 5]);
+ }
+ else if (c1 == c2) {
+printf("%c%c",
+matrix[(r1 + 1) % 5][c1],
+matrix[(r2 + 1) % 5][c2]);
+ }
+ else {
+printf("%c%c",
+matrix[r1][c2],
+matrix[r2][c1]);
+ }
+ }
+
+ return 0;
+} 
+```
 
 
 
 Output:
+
+<img width="700" height="376" alt="Screenshot 2026-02-11 162005" src="https://github.com/user-attachments/assets/f80d1a5b-4247-40fb-a049-f79263141232" />
+
+RESULT:
+
+Thus the implementation of play fair cipher has been executed successfully. 
+
+
+
+
+
